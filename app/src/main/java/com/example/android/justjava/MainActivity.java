@@ -10,8 +10,11 @@ package com.example.android.justjava;
 
 
 import android.os.Bundle;
+import android.support.v4.content.res.ConfigurationHelper;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import java.text.NumberFormat;
@@ -35,8 +38,11 @@ public class MainActivity extends AppCompatActivity {
      */
     public void submitOrder(View view) {
         int price = calculatePrice();
-        String name = "Phil Djambazoff";
-        displayMessage(createOrderSummary(price, name, quantity));
+        boolean hasWippedCream =((CheckBox) findViewById(R.id.whipped_cream_box)).isChecked();
+        boolean hasChocolate = ((CheckBox) findViewById(R.id.chocolate_box)).isChecked();
+        //String nameClient = ((EditText) findViewById(R.id.input_name)).getText().toString();
+        String name = getName();
+        displayMessage(createOrderSummary(price, name, quantity, hasWippedCream, hasChocolate));
     }
 
 
@@ -50,17 +56,47 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * @param priceNumber    total price
+     * @param price    total price
      * @param name           of the client
-     * @param quantityNumber of ordered cups
+     * @param quantity of ordered cups
      * @return summary of order
      */
 
-    private String createOrderSummary(int priceNumber, String name, int quantityNumber) {
-        String textSummary = "Name: " + name + "\nQuantity: " + quantityNumber
-                + "\nTotal Price: $" + priceNumber + "\nThank you!";
-        return textSummary;
+    private String createOrderSummary(int price, String name, int quantity,
+                                      boolean whipped, boolean chocolate) {
+        String textSummary;
+
+        if (whipped && chocolate) {
+            textSummary = "Name: " + name + "\nTopping: Whipped Cream" + "\nToppings: Chocolate"
+                    + "\nQuantity: " + quantity
+                    + "\nTotal Price: $" + price + "\nThank you!";
+        }
+        else if (chocolate) {
+            textSummary = "Name: " + name + "\nToppings: Chocolate" + "\nQuantity: " + quantity
+                    + "\nTotal Price: $" + price + "\nThank you!";
+        }
+        else if (whipped) {
+            textSummary = "Name: " + name + "\nToppings: Whipped Cream" + "\nQuantity: " + quantity
+                    + "\nTotal Price: $" + price + "\nThank you!";
+        }
+        else {
+            textSummary = "Name: " + name + "\nQuantity: " + quantity
+                    + "\nTotal Price: $" + price + "\nThank you!";
+        }
+            return textSummary;
+
     }
+    private String getName() {
+        String nameClient = ((EditText) findViewById(R.id.input_name)).getText().toString();
+        if (!nameClient.equals("")) {
+            return nameClient;
+        }
+        else {
+            nameClient = "Phil Djambazoff";
+            return nameClient;
+        }
+    }
+
 
     /**
      * @return total price
@@ -92,4 +128,5 @@ public class MainActivity extends AppCompatActivity {
         quantity = quantity - 1;
         displayQuantity(quantity);
     }
+
 }
